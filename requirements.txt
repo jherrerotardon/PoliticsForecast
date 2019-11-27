@@ -1,0 +1,5 @@
+# Python API framework.
+python-twitter
+
+# Natural Languague Toolkit.
+nltk

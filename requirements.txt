@@ -1,5 +1,8 @@
 # Python API framework.
-python-twitter
+tweepy
 
 # Natural Languague Toolkit.
 nltk
+
+# To make graphs.
+matplotlib

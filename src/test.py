@@ -1,3 +1,38 @@
+parties_query = {
+        'PSOE': 'PSOE',
+        'PP': 'PP',
+        'Cs': 'Ciudadanos',
+        'UP': 'Unidas podemos',
+        'Vox': 'Vox'
+    }
+
+def CrawlPartyTweets(party):
+    cursor = tweepy.Cursor(api.search,
+        q=f"{parties_query[party]} -filter:retweets",
+        count=100,
+        tweet_mode="extended",
+        lang="es",
+        since="2019-11-28",
+        until="2019-12-10"
+    )
+    for tweet in cursor.items():
+        dto_tweet = {
+            'id': tweet.id,
+            'created_at': tweet.created_at,
+            'text': tweet.full_text,
+            'username': tweet.author.screen_name,
+            'verified': tweet.author.verified,
+            'political_party': 'PSOE'
+        }
+        values = ", ".join("'" + str(x) + "'" for x in dto_tweet.values()).replace('\\', '')
+        insert = f'INSERT INTO tweets VALUES({values})'
+        try :
+            db.execute(insert)
+        except Exception as e:
+            print(e)
+            pass
+        db.commit()
+
 if __name__ == '__main__':
     # api = twitter.Api(**twitter_credentials)
     #
@@ -9,6 +44,9 @@ if __name__ == '__main__':
 
     import tweepy
     import csv
+    import sys
+    import pyodbc
+    sys.path.append("./")
     from config.credentials import access_tokens, consumer_keys
 
     auth = tweepy.OAuthHandler(**consumer_keys)
@@ -16,25 +54,19 @@ if __name__ == '__main__':
 
     api = tweepy.API(auth, wait_on_rate_limit=True)
 
-    # Open/Create a file to append data
-    csvFile = open('tweets.csv', 'a')
-    csvWriter = csv.writer(csvFile)
-
     # SQL Table columns.
-    # -----> tweet_id (using to avoid duplicated tweets)
+    # -----> id (using to avoid duplicated tweets)
     # -----> created_at (creation date of tweet)
     # -----> text (tweet content)
-    # -----> is_verified (user.verified field to know if tweet ()
-    # -----> username (user.name field who wrote tweet)
+    # -----> verified (author.verified field to know if tweet ()
+    # -----> username (author.screen_name field who wrote tweet)
     # -----> political_party (to join tweet with any political party)
-
-    for tweet in tweepy.Cursor(
-            api.search,
-            q="%28salamanca%20OR%20segovia%29 -filter:retweets",
-            count=100,
-            lang="es",
-            since="2019-11-30"
-
-    ).items():
-        print(tweet.created_at, tweet.text)
-        csvWriter.writerow([tweet.created_at, tweet.text.encode('utf-8')])
+    conn = pyodbc.connect(
+        'Driver={SQL Server};'
+        'Server=LOCALHOST\SQLEXPRESS;'
+        'Database=Political_forecast;'
+        'Trusted_Connection=yes;'
+    )
+    db = conn.cursor()
+    for key in parties_query.keys():
+        CrawlPartyTweets(key)

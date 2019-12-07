@@ -6,3 +6,6 @@ nltk
 
 # To make graphs.
 matplotlib
+
+# Database handler
+pyodbc

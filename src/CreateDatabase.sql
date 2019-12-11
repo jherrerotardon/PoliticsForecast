@@ -1,3 +1,11 @@
+--SQL Table columns.
+ -----> id (using to avoid duplicated tweets)
+ -----> created_at (creation date of tweet)
+ -----> text (tweet content)
+ -----> verified (author.verified field to know if tweet ()
+ -----> username (author.screen_name field who wrote tweet)
+ -----> political_party (to join tweet with any political party)
+
 CREATE DATABASE Political_forecast;
 USE Political_forecast;
 CREATE TABLE Tweets (

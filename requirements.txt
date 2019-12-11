@@ -8,4 +8,4 @@ nltk
 matplotlib
 
 # Database handler
-pyodbc
+mysql-connector

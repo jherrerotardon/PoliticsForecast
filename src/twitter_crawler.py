@@ -1,6 +1,6 @@
 import csv
 import sys
-
+from utils.paths import get_data_path
 import tweepy
 
 sys.path.append("./")
@@ -27,7 +27,7 @@ def crawl_tweets(api_):
                            )
 
     fieldnames = ['id', 'created_at', 'text', 'username', 'verified']
-    with open('tweets.csv', mode='a') as file:
+    with open(get_data_path() + '/tweets.csv', mode='a') as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
 

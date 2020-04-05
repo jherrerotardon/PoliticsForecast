@@ -1,0 +1,11 @@
+# Python API framework.
+tweepy
+
+# Natural Languague Toolkit.
+nltk
+
+# To make graphs.
+matplotlib
+
+# Database handler
+mysql-connector
